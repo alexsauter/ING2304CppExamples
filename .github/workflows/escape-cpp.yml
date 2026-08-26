@@ -38,7 +38,7 @@ jobs:
 
       # ⚠️ VERIFY CORRECT VERSION BEFORE DEPLOYING!
       - name: Create commit with converted files (if changed)
-        uses: stefanzweifel/git-auto-commit-action@v4  # ← CHECK THIS TAG EXISTS FIRST!
+        uses: stefanzweifel/git-auto-commit-action@v7  # ← CHECK THIS TAG EXISTS FIRST!
         with:
           commit_message: "🔄 Auto-update HTML-safe C++ examples"
           file_pattern: 'html-output/*.html'
