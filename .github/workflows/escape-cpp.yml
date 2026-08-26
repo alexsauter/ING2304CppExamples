@@ -13,18 +13,16 @@ jobs:
   convert:
     runs-on: ubuntu-latest
     
-    # 🔥 ADD THIS PERMISSIONS BLOCK (properly indented)
     permissions:
-      contents: write  # Allows pushing commits back to repository
+      contents: write  # Required for pushing commits back to repo
     
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
     
-    steps:  # ← ONLY ONE CHECKOUT STEP NOW
-      - name: Checkout code
+    steps:
+      - name: Checkout repository with default credentials
         uses: actions/checkout@v5
-        with:
-          persist-credentials: false  # Prevents token conflicts
+        # REMOVED persist-credentials setting that was breaking auth
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -36,9 +34,9 @@ jobs:
           mkdir -p html-output
           python scripts/cpp_to_html.py || echo "Conversion completed (some errors may be expected)"
 
-      # ⚠️ VERIFY CORRECT VERSION BEFORE DEPLOYING!
       - name: Create commit with converted files (if changed)
-        uses: stefanzweifel/git-auto-commit-action@v7  # ← CHECK THIS TAG EXISTS FIRST!
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
+          #github_token: ${{ secrets.GITHUB_TOKEN }}  # Explicitly pass token for reliability
           commit_message: "🔄 Auto-update HTML-safe C++ examples"
           file_pattern: 'html-output/*.html'
