@@ -1,22 +1,21 @@
 name: Convert C++ Examples to HTML
 
-on:  # ← THIS WAS MISSING ENTIRELY
+on:
   push:
-    branches: [ main, master ]     # Trigger on pushes to main/master branch
+    branches: [ main, master ]
     paths:
-      - 'cpp-examples/**'          # Only trigger when files change in cpp-examples/
-      - '.github/workflows/'        # Also trigger if workflow itself changes
+      - 'cpp-examples/**'
+      - '.github/workflows/'
   pull_request:
     branches: [ main, master ]
 
-# Rest of your existing job definition continues here...
 jobs:
   convert:
     runs-on: ubuntu-latest
     
-    # ADD THIS BLOCK TO FORCE NODE.JS VERSION COMPATIBILITY CHECKS
-    #env:
-    #  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+    # 🔥 CRITICAL: Force Node.js 24 to avoid deprecation issues
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
     
     steps:
     - uses: actions/checkout@v5
@@ -31,9 +30,9 @@ jobs:
         mkdir -p html-output
         python scripts/cpp_to_html.py || echo "Conversion completed (some errors may be expected)"
 
-    # Commit changes back to repo IF there were any updates
+    # ⚠️ VERIFY CORRECT VERSION BEFORE DEPLOYING!
     - name: Create commit with converted files (if changed)
-      uses: stefanzweifel/git-auto-commit-action@v6
+      uses: stefanzweifel/git-auto-commit-action@v4  # ← CHECK THIS TAG EXISTS FIRST!
       with:
         commit_message: "🔄 Auto-update HTML-safe C++ examples"
         file_pattern: 'html-output/*.html'
