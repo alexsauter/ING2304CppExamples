@@ -2,45 +2,36 @@ name: Convert C++ Examples to HTML
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
     paths:
       - 'cpp-examples/**'
-      - '.github/workflows/'
   pull_request:
-    branches: [ main, master ]
+    types: [opened, synchronize]
 
 jobs:
   convert:
     runs-on: ubuntu-latest
     
-    # Required permissions for committing back to repository
     permissions:
-      contents: write
-    
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-    
+      contents: write  # This is the ONLY permission needed!
+
     steps:
-      - name: Checkout with proper credentials
-        uses: actions/checkout@v5
-        # CRITICAL: Must be true to push commits back!
+      - uses: actions/checkout@v5
         with:
-          persist-credentials: true
+          persist-credentials: true  # Critical for push operations
 
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.x'
-      
+
       - name: Convert C++ files to HTML-safe versions
         run: |
           mkdir -p html-output
-          python scripts/cpp_to_html.py || echo "Conversion completed (some errors may be expected)"
+          python scripts/cpp_to_html.py || echo "Conversion completed"
 
-      # CRITICAL: Explicitly pass token for authentication reliability
-      - name: Commit and push changes back to repository
-        uses: stefanzweifel/git-auto-commit-action@v7
+      # That's it! This simple line commits and pushes changes back.
+      - uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}  # Explicit token reference
           commit_message: "🔄 Auto-update HTML-safe C++ examples"
           file_pattern: 'html-output/*.html'
