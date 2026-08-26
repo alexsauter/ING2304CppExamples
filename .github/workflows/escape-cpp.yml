@@ -13,33 +13,32 @@ jobs:
   convert:
     runs-on: ubuntu-latest
     
-    # 🔥 ADD THIS PERMISSIONS BLOCK
+    # 🔥 ADD THIS PERMISSIONS BLOCK (properly indented)
     permissions:
       contents: write  # Allows pushing commits back to repository
     
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
     
-    steps:
-      - uses: actions/checkout@v5
+    steps:  # ← ONLY ONE CHECKOUT STEP NOW
+      - name: Checkout code
+        uses: actions/checkout@v5
         with:
           persist-credentials: false  # Prevents token conflicts
-    
-    - uses: actions/checkout@v5
-    
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: '3.x'
-    
-    - name: Convert C++ files to HTML-safe versions
-      run: |
-        mkdir -p html-output
-        python scripts/cpp_to_html.py || echo "Conversion completed (some errors may be expected)"
 
-    # ⚠️ VERIFY CORRECT VERSION BEFORE DEPLOYING!
-    - name: Create commit with converted files (if changed)
-      uses: stefanzweifel/git-auto-commit-action@v4  # ← CHECK THIS TAG EXISTS FIRST!
-      with:
-        commit_message: "🔄 Auto-update HTML-safe C++ examples"
-        file_pattern: 'html-output/*.html'
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+      
+      - name: Convert C++ files to HTML-safe versions
+        run: |
+          mkdir -p html-output
+          python scripts/cpp_to_html.py || echo "Conversion completed (some errors may be expected)"
+
+      # ⚠️ VERIFY CORRECT VERSION BEFORE DEPLOYING!
+      - name: Create commit with converted files (if changed)
+        uses: stefanzweifel/git-auto-commit-action@v4  # ← CHECK THIS TAG EXISTS FIRST!
+        with:
+          commit_message: "🔄 Auto-update HTML-safe C++ examples"
+          file_pattern: 'html-output/*.html'
