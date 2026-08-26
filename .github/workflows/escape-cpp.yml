@@ -1,0 +1,52 @@
+name: Convert C++ to HTML-safe
+
+on:
+  push:
+    paths:
+      - 'cpp-examples/*.cpp'
+      - '.github/workflows/escape-cpp.yml'
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    # Install Python and run converter script
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+    
+    - name: Convert C++ files to HTML-safe versions
+      run: |
+        mkdir -p html-output
+        python scripts/cpp_to_html.py
+    
+    # Commit changes back to repo
+    - name: Create commit with converted files
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: "🔄 Auto-update HTML-safe C++ examples"
+        file_pattern: 'html-output/*.html'
+
+  # Optional: Deploy to GitHub Pages
+  deploy-pages:
+    needs: convert
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Pages
+      uses: actions/configure-pages@v3
+    
+    - name: Upload GitHub Pages site assets
+      uses: actions/upload-pages-artifact@v1
+      with:
+        path: './html-output'
+    
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v2
