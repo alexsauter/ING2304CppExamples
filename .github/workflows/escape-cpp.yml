@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     
     # ADD THIS BLOCK TO FORCE NODE.JS VERSION COMPATIBILITY CHECKS
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+    #env:
+    #  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
     
     steps:
     - uses: actions/checkout@v5
@@ -33,7 +33,7 @@ jobs:
 
     # Commit changes back to repo IF there were any updates
     - name: Create commit with converted files (if changed)
-      uses: stefanzweifel/git-auto-commit-action@v5  # Updated from v4 → v5
+      uses: stefanzweifel/git-auto-commit-action@v6
       with:
         commit_message: "🔄 Auto-update HTML-safe C++ examples"
         file_pattern: 'html-output/*.html'
