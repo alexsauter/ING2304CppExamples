@@ -13,16 +13,19 @@ jobs:
   convert:
     runs-on: ubuntu-latest
     
+    # Required permissions for committing back to repository
     permissions:
-      contents: write  # Required for pushing commits back to repo
+      contents: write
     
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
     
     steps:
-      - name: Checkout repository with default credentials
+      - name: Checkout with proper credentials
         uses: actions/checkout@v5
-        # REMOVED persist-credentials setting that was breaking auth
+        # CRITICAL: Must be true to push commits back!
+        with:
+          persist-credentials: true
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -34,9 +37,10 @@ jobs:
           mkdir -p html-output
           python scripts/cpp_to_html.py || echo "Conversion completed (some errors may be expected)"
 
-      - name: Create commit with converted files (if changed)
+      # CRITICAL: Explicitly pass token for authentication reliability
+      - name: Commit and push changes back to repository
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          #github_token: ${{ secrets.GITHUB_TOKEN }}  # Explicitly pass token for reliability
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # Explicit token reference
           commit_message: "🔄 Auto-update HTML-safe C++ examples"
           file_pattern: 'html-output/*.html'
