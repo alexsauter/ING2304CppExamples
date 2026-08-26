@@ -1,13 +1,24 @@
-# Updated workflow snippet
+name: Convert C++ Examples to HTML
+
+on:  # ← THIS WAS MISSING ENTIRELY
+  push:
+    branches: [ main, master ]     # Trigger on pushes to main/master branch
+    paths:
+      - 'cpp-examples/**'          # Only trigger when files change in cpp-examples/
+      - '.github/workflows/'        # Also trigger if workflow itself changes
+  pull_request:
+    branches: [ main, master ]
+
+# Rest of your existing job definition continues here...
 jobs:
   convert:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v4          # Updated from v3 → v4
+    - uses: actions/checkout@v4      # Updated from v3 → v4
     
     - name: Set up Python
-      uses: actions/setup-python@v5      # Updated from v4 → v5
+      uses: actions/setup-python@v5  # Updated from v4 → v5
       with:
         python-version: '3.x'
     
