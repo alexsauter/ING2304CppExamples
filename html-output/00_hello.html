@@ -22,17 +22,12 @@
 <pre><code class="language-cpp">#include &lt;iostream&gt;
 
 int main() {
-    std::cout &lt;&lt; &quot;Hello, on Canvas!&quot; &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot;Hello, Canvas!&quot; &lt;&lt; std::endl;
     return 0;
 }
 </code></pre>
-<button class="copy-btn" onclick="navigator.clipboard.writeText(`#include <iostream>
-
-int main() {
-    std::cout << "Hello, on Canvas!" << std::endl;
-    return 0;
-}
-`)">Copy Code</button>
+<!-- CRITICAL FIX: Use single quotes for JS string to avoid conflicts with C++ double quotes -->
+<button class="copy-btn" onclick="navigator.clipboard.writeText('#include <iostream>\n\nint main() {\n    std::cout << \"Hello, Canvas!\" << std::endl;\n    return 0;\n}\n')">Copy Code</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
