@@ -20,12 +20,8 @@ jobs:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
     
     steps:
-      # 🔐 CRITICAL CHANGE: Explicitly pass PAT for checkout authentication
-      - name: Checkout with explicit token authentication
+      - name: Checkout repository
         uses: actions/checkout@v5
-        with:
-          persist-credentials: true
-          token: ${{ secrets.PAT_TOKEN }}  # Use verified working token
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -35,24 +31,25 @@ jobs:
       - name: Convert C++ files to HTML-safe versions
         run: |
           mkdir -p html-output
-          python scripts/cpp_to_html.py || echo "Conversion completed (some errors may be expected)"
+          python scripts/cpp_to_html.py || echo "Conversion completed"
 
-      # 🔐 CRITICAL CHANGE: Manually configure remote URL with embedded token for reliable authentication
-      - name: Configure authenticated git operations
+      # 🔑 CRITICAL FIX: Configure git authentication explicitly via environment variables
+      - name: Configure authenticated git operations with PAT
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          # CRITICAL LINE: Replace remote origin URL to embed authentication token directly
-          cd "$GITHUB_WORKSPACE" && \
-          NEW_REMOTE_URL="https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" && \
-          git remote set-url origin "$NEW_REMOTE_URL" && \
-          echo "✅ Updated remote URL with embedded token authentication"
+          # 🔑 KEY CHANGE: Set up credential helper to use PAT from environment variable
+          echo "https://x-access-token:${PAT_TOKEN}@github.com" > ~/.netrc
+          chmod 600 ~/.netrc
+          
+          # Verify authentication works before proceeding
+          git ls-remote https://github.com/${GITHUB_REPOSITORY}.git HEAD && \
+            echo "✅ Git authentication verified successfully!" || \
+            (echo "❌ Authentication failed" && exit 1)
 
-      # Commit and push changes back to repository using explicit PAT-based authentication
       - name: Commit and push changes back to repository
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          github_token: ${{ secrets.PAT_TOKEN }}  # Explicit PAT reference ensures maximum compatibility
           commit_message: "🔄 Auto-update HTML-safe C++ examples"
           file_pattern: 'html-output/*.html'
