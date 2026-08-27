@@ -54,7 +54,7 @@ jobs:
         with:
           commit_message: "🔄 Auto-update HTML-safe C++ examples"
           file_pattern: 'html-output/*.html'
-          # 🔥 CRITICAL FIXES FOR CONCURRENT EXECUTION HANDLING
-          push_options: --force-with-lease     # Safe force push to handle divergence
-          skip_fetch: true                    # Prevent internal git fetch that causes conflicts
-          status_options: '--untracked-files=no'  # Ignore untracked files during dirty check
+         # 🔥 CRITICAL FIX #4: Handle edge cases in push scenarios gracefully
+          skip_fetch: true                           # Prevent internal git fetch conflicts
+          status_options: '--untracked-files=no'     # Ignore untracked files during dirty detection
+          disable_globbing: false                    # Ensure consistent file pattern matching
