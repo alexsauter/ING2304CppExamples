@@ -33,13 +33,15 @@ jobs:
           mkdir -p html-output
           python scripts/cpp_to_html.py || echo "Conversion completed"
 
-      # 🔑 CRITICAL FIX: Configure git authentication explicitly via environment variables
+      # 🔑 CRITICAL FIX: Configure git authentication via environment variables
       - name: Configure authenticated git operations with PAT
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}  # Pass token explicitly to shell session
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          # 🔑 KEY CHANGE: Set up credential helper to use PAT from environment variable
+          # 🔑 Set up credential helper to use PAT from environment variable
           echo "https://x-access-token:${PAT_TOKEN}@github.com" > ~/.netrc
           chmod 600 ~/.netrc
           
@@ -48,8 +50,9 @@ jobs:
             echo "✅ Git authentication verified successfully!" || \
             (echo "❌ Authentication failed" && exit 1)
 
+      # 🔥 CRITICAL UPDATE: Use v7 explicitly and remove unsupported parameters
       - name: Commit and push changes back to repository
-        uses: stefanzweifel/git-auto-commit-action@v7
+        uses stefanzweifel/git-auto-commit-action@v7.7.0  # Pin specific version for consistency
         with:
           commit_message: "🔄 Auto-update HTML-safe C++ examples"
           file_pattern: 'html-output/*.html'
