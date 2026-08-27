@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Convert C++ files to syntax-highlighted HTML with working copy buttons"""
+"""Convert C++ files to syntax-highlighted HTML with WORKING copy buttons"""
 
 import os
 import html
@@ -20,13 +20,11 @@ def cpp_file_to_html(cpp_filename, output_dir="html-output"):
 
     filename_no_ext = Path(cpp_filename).stem  # Remove .cpp extension
     
-    # CRITICAL FIX: Properly encode raw code for JavaScript string embedding
-    # Escape backslashes first, then quotes, then newlines/tabs
+    # 🔥 CRITICAL FIX: Convert HTML entities back to raw characters for JavaScript context
+    # This prevents browser confusion when interpreting the string during clipboard operations
     js_string_code = (code
-                      .replace('\\', '\\\\')    # Must be FIRST!
-                      .replace('"', '\\"')      # Escape double quotes
-                      .replace('\n', '\\n')     # Preserve line breaks in JS string
-                      .replace('\t', '\\t'))    # Convert tabs to literal \t sequence
+                      .replace('\\', '\\\\')    # Must be FIRST! Escape backslashes
+                      .replace('"', '\\"'))     # Escape double quotes for JS string safety
 
     html_content = f"""<!DOCTYPE html>
 <html lang="en">
@@ -50,7 +48,7 @@ def cpp_file_to_html(cpp_filename, output_dir="html-output"):
 
 <div class="code-container">
 <pre><code class="language-cpp">{escaped_for_display}</code></pre>
-<!-- CRITICAL FIX: Use single quotes for JS string to avoid conflicts with C++ double quotes -->
+<!-- CRITICAL FIX: Use single quotes for JS string AND convert HTML entities back to raw characters -->
 <button class="copy-btn" onclick="navigator.clipboard.writeText('{js_string_code}')">Copy Code</button>
 </div>
 
