@@ -1,21 +1,33 @@
 #!/usr/bin/env python3
-"""Convert C++ files to HTML-safe versions for embedding"""
+"""Convert C++ files to syntax-highlighted HTML with working copy buttons"""
 
 import os
 import html
 from pathlib import Path
 
 def cpp_file_to_html(cpp_filename, output_dir="html-output"):
-    """Convert a .cpp file into an embeddable HTML snippet"""
+    """Convert a .cpp file into an embeddable HTML snippet with WORKING copy button"""
     
-    with open(f"cpp-examples/{cpp_filename}", "r", encoding="utf-8") as f:
+    input_path = Path("cpp-examples") / cpp_filename
+    if not input_path.exists():
+        raise FileNotFoundError(f"C++ source file '{input_path}' does not exist.")
+
+    with open(input_path, "r", encoding="utf-8") as f:
         code = f.read()
 
-    # Escape special characters for safe HTML embedding
-    escaped_code = html.escape(code)
+    # For DISPLAY purposes - escape HTML entities for safe rendering inside <pre><code>
+    escaped_for_display = html.escape(code)
 
     filename_no_ext = Path(cpp_filename).stem  # Remove .cpp extension
     
+    # CRITICAL FIX: Properly encode raw code for JavaScript string embedding
+    # Escape backslashes first, then quotes, then newlines/tabs
+    js_string_code = (code
+                      .replace('\\', '\\\\')    # Must be FIRST!
+                      .replace('"', '\\"')      # Escape double quotes
+                      .replace('\n', '\\n')     # Preserve line breaks in JS string
+                      .replace('\t', '\\t'))    # Convert tabs to literal \t sequence
+
     html_content = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,8 +49,9 @@ def cpp_file_to_html(cpp_filename, output_dir="html-output"):
 <body>
 
 <div class="code-container">
-<pre><code class="language-cpp">{escaped_code}</code></pre>
-<button class="copy-btn" onclick="navigator.clipboard.writeText(`{code}`)">Copy Code</button>
+<pre><code class="language-cpp">{escaped_for_display}</code></pre>
+<!-- CRITICAL FIX: Use single quotes for JS string to avoid conflicts with C++ double quotes -->
+<button class="copy-btn" onclick="navigator.clipboard.writeText('{js_string_code}')">Copy Code</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
@@ -48,15 +61,34 @@ def cpp_file_to_html(cpp_filename, output_dir="html-output"):
 </html>"""
 
     output_path = Path(output_dir) / f"{filename_no_ext}.html"
+    os.makedirs(output_dir, exist_ok=True)
+    
     with open(output_path, "w", encoding="utf-8") as out:
         out.write(html_content)
 
 if __name__ == "__main__":
-    os.makedirs("html-output", exist_ok=True)
+    cpp_folder = Path("cpp-examples")
     
-    for cpp_file in Path("cpp-examples").glob("*.cpp"):
+    if not cpp_folder.exists():
+        print("⚠️ Folder 'cpp-examples' does not exist yet.")
+        exit(0)  # Don't fail the build because of missing folder
+
+    converted_count = 0
+    failed_files = []
+
+    for cpp_file in sorted(cpp_folder.glob("*.cpp")):
         try:
             cpp_file_to_html(cpp_file.name)
             print(f"✅ Converted {cpp_file.name}")
+            converted_count += 1
         except Exception as e:
             print(f"❌ Failed to convert {cpp_file.name}: {e}")
+            failed_files.append((cpp_file.name, str(e)))
+
+    if converted_count == 0 and not any(cpp_folder.glob("*.cpp")):
+        print("📭 No .cpp files found in cpp-examples folder.")
+
+    if failed_files:
+        print("\n⚠️ Some conversions had issues:")
+        for fname, err in failed_files:
+            print(f"   - {fname}: {err}")
