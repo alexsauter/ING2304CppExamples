@@ -20,11 +20,11 @@ def cpp_file_to_html(cpp_filename, output_dir="html-output"):
 
     filename_no_ext = Path(cpp_filename).stem  # Remove .cpp extension
     
-    # 🔥 CRITICAL FIX: Convert HTML entities back to raw characters for JavaScript context
-    # This prevents browser confusion when interpreting the string during clipboard operations
+    # 🔥 CRITICAL FIX: Convert ALL special characters appropriately for JavaScript context
     js_string_code = (code
                       .replace('\\', '\\\\')    # Must be FIRST! Escape backslashes
-                      .replace('"', '\\"'))     # Escape double quotes for JS string safety
+                      .replace('\n', '\\n')     # Convert newlines to JS escape sequences
+                      .replace('"', '\\"'))     # Escape double quotes for safety
 
     html_content = f"""<!DOCTYPE html>
 <html lang="en">
@@ -48,7 +48,7 @@ def cpp_file_to_html(cpp_filename, output_dir="html-output"):
 
 <div class="code-container">
 <pre><code class="language-cpp">{escaped_for_display}</code></pre>
-<!-- CRITICAL FIX: Use single quotes for JS string AND convert HTML entities back to raw characters -->
+<!-- CRITICAL FIX: Use single quotes for JS string AND convert newlines to \n sequences -->
 <button class="copy-btn" onclick="navigator.clipboard.writeText('{js_string_code}')">Copy Code</button>
 </div>
 
