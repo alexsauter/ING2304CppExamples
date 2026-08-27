@@ -6,7 +6,7 @@ pinMode(pin, OUTPUT);             // Set pin as output for driving LEDs, etc.
 
 digitalWrite(pin, HIGH);          // Write logic high (VCC) to output pin or enable internal pull-up in INPUT mode
 digitalWrite(pin, LOW);           // Write logic low (GND) to output pin
-int reading = digitalRead(pin);   // Read current digital state of pin - returns HIGH(1) or LOW(0)
+bool reading = digitalRead(pin);   // Read current digital state of pin - returns HIGH(1) or LOW(0)
 
 delay(milliseconds);              // Pause program execution for specified milliseconds (blocking!)
 unsigned long now = millis();     // Returns elapsed time since Arduino started in milliseconds (non-blocking timing)
@@ -26,3 +26,18 @@ true / false                        // Boolean values equivalent to 1/0 respecti
 // === TIMING COMPARISON EXAMPLE ===
 
 if (millis() - lastTime > debounceDelay) { }  // Non-blocking timer check using millis()
+
+// === BOOLEAN DATA TYPES ===
+bool buttonPressed = digitalRead(BUTTON_PIN);    // HIGH(1) or LOW(0) stored as boolean
+bool ledState = false;                           // Initialize as OFF
+const bool DEBUG_MODE = true;                    // Compile-time constant
+
+void loop() {
+    buttonPressed = digitalRead(BUTTON_PIN);
+    
+    if (buttonPressed) {                        // Direct boolean check - much cleaner!
+        Serial.println("Button pressed!");      // No need for == HIGH comparison
+    } else {
+        ledState = !ledState;                   // Toggle state using NOT operator
+    }
+}
