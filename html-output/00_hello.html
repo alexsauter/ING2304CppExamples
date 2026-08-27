@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>00_hello</title>
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet"/>
+    <style>
+        body { margin: 0; padding: 20px; font-family: Arial, sans-serif; }
+        pre { border-radius: 6px; padding: 15px !important; }
+        .code-container { position: relative; }
+        .copy-btn {
+            position: absolute; top: 10px; right: 10px;
+            background-color: #4CAF50; color: white; border: none;
+            padding: 6px 12px; border-radius: 4px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="code-container">
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+
+int main() {
+    std::cout &lt;&lt; &quot;Hello, on Canvas!&quot; &lt;&lt; std::endl;
+    return 0;
+}
+</code></pre>
+<button class="copy-btn" onclick="navigator.clipboard.writeText(`#include <iostream>
+
+int main() {
+    std::cout << "Hello, on Canvas!" << std::endl;
+    return 0;
+}
+`)">Copy Code</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+</body>
+</html>
