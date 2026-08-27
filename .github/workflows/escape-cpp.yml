@@ -55,6 +55,6 @@ jobs:
           commit_message: "🔄 Auto-update HTML-safe C++ examples"
           file_pattern: 'html-output/*.html'
          # 🔥 CRITICAL FIX #4: Handle edge cases in push scenarios gracefully
-          skip_fetch: true                           # Prevent internal git fetch conflicts
-          status_options: '--untracked-files=no'     # Ignore untracked files during dirty detection
-          disable_globbing: false                    # Ensure consistent file pattern matching
+          #skip_fetch: true                           # Prevent internal git fetch conflicts
+          #status_options: '--untracked-files=no'     # Ignore untracked files during dirty detection
+          #disable_globbing: false                    # Ensure consistent file pattern matching
