@@ -20,7 +20,7 @@ def cpp_file_to_html(cpp_filename, output_dir="html-output"):
 
     filename_no_ext = Path(cpp_filename).stem  # Remove .cpp extension
     
-    # 🔥 CRITICAL FIX: Use backtick template literals to eliminate all quote escaping conflicts!
+    # 🔥 CRITICAL FIX: Generate PROVEN working copy mechanism instead of experimental API!
     js_string_code = (code
                       .replace('\\', '\\\\')    # Escape backslashes first
                       .replace('`', '\\`'))     # Only need to escape backticks for template literals
@@ -47,12 +47,58 @@ def cpp_file_to_html(cpp_filename, output_dir="html-output"):
 
 <div class="code-container">
 <pre><code class="language-cpp">{escaped_for_display}</code></pre>
-<!-- 🔥 CRITICAL FIX: Use backtick template literals to avoid ALL quote escaping issues -->
-<button class="copy-btn" onclick="navigator.clipboard.writeText(`{js_string_code}`)">Copy Code</button>
+<!-- 🔥 CRITICAL FIX: Use proven legacy copy mechanism instead of experimental clipboard API -->
+<button class="copy-btn" onclick="legacyCopyCode(this)">Copy Code</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<!-- 🔥 CRITICAL FIX: Include proven working copy function -->
+<script>
+function legacyCopyCode(button) {{
+    // 🎯 EXACTLY replicate your originally-working approach from manual HTML file!
+    const codeBlock = button.previousElementSibling;  // Get the <pre><code> element
+    
+    // Extract clean text content (handles HTML entities automatically)
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = codeBlock.innerHTML;
+    const textToCopy = tempDiv.textContent || tempDiv.innerText || '';
+    
+    // 🔥 CORE WORKING MECHANISM: Create textarea + execCommand approach
+    const textarea = document.createElement("textarea");
+    textarea.value = textToCopy;
+    textarea.style.position = "fixed";  // Prevent scrolling to bottom
+    textarea.style.opacity = "0";       // Keep invisible but focusable
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    
+    try {{
+        const successful = document.execCommand('copy');  // Universal browser support!
+        if (successful) {{
+            button.textContent = "✅ Copied!";
+        }} else {{
+            throw new Error("execCommand returned false");
+        }}
+    }} catch (err) {{
+        console.error('Copy failed:', err);
+        button.textContent = "❌ Manual Copy Required";
+        // Highlight code for manual selection as fallback
+        const range = document.createRange();
+        range.selectNode(codeBlock.querySelector('code') || codeBlock);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+    }} finally {{
+        setTimeout(() => {{
+            button.textContent = "Copy Code";  // Restore original text
+            if (document.body.contains(textarea)) {{
+                document.body.removeChild(textarea);  // Cleanup
+            }}
+        }}, 2000);
+    }}
+}}
+</script>
 
 </body>
 </html>"""
