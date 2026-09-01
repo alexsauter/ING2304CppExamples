@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>xx_Sannhetstabell</title>
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet"/>
+    <style>
+        body { margin: 0; padding: 20px; font-family: Arial, sans-serif; }
+        pre { border-radius: 6px; padding: 15px !important; }
+        .code-container { position: relative; }
+        .copy-btn {
+            position: absolute; top: 10px; right: 10px;
+            background-color: #4CAF50; color: white; border: none;
+            padding: 6px 12px; border-radius: 4px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="code-container">
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+
+bool x = false;
+bool y = false;
+
+
+int main()
+{
+    for (int i=0; i&lt;4; i++) {
+
+    //x og y med output, her for xor
+    std::cout&lt;&lt;y &lt;&lt; &quot;|&quot; &lt;&lt; x&lt;&lt; &quot;|&quot; &lt;&lt; (x xor y) &lt;&lt; std::endl;
+
+    //Lage neste x og y
+    y = x xor y;
+    x = !x;
+    }
+    return 0;
+}
+</code></pre>
+<!-- 🔥 CRITICAL FIX: Use proven legacy copy mechanism instead of experimental clipboard API -->
+<button class="copy-btn" onclick="legacyCopyCode(this)">Copy Code</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<!-- 🔥 CRITICAL FIX: Include proven working copy function -->
+<script>
+function legacyCopyCode(button) {
+    // 🎯 EXACTLY replicate your originally-working approach from manual HTML file!
+    const codeBlock = button.previousElementSibling;  // Get the <pre><code> element
+    
+    // Extract clean text content (handles HTML entities automatically)
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = codeBlock.innerHTML;
+    const textToCopy = tempDiv.textContent || tempDiv.innerText || '';
+    
+    // 🔥 CORE WORKING MECHANISM: Create textarea + execCommand approach
+    const textarea = document.createElement("textarea");
+    textarea.value = textToCopy;
+    textarea.style.position = "fixed";  // Prevent scrolling to bottom
+    textarea.style.opacity = "0";       // Keep invisible but focusable
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    
+    try {
+        const successful = document.execCommand('copy');  // Universal browser support!
+        if (successful) {
+            button.textContent = "✅ Copied!";
+        } else {
+            throw new Error("execCommand returned false");
+        }
+    } catch (err) {
+        console.error('Copy failed:', err);
+        button.textContent = "❌ Manual Copy Required";
+        // Highlight code for manual selection as fallback
+        const range = document.createRange();
+        range.selectNode(codeBlock.querySelector('code') || codeBlock);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+    } finally {
+        setTimeout(() => {
+            button.textContent = "Copy Code";  // Restore original text
+            if (document.body.contains(textarea)) {
+                document.body.removeChild(textarea);  // Cleanup
+            }
+        }, 2000);
+    }
+}
+</script>
+
+</body>
+</html>
