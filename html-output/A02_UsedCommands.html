@@ -29,6 +29,10 @@ analogWrite(pin, value);          // Write analog value to output pin, allowed v
 
 delay(milliseconds);              // Pause program execution for specified milliseconds (blocking!)
 
+// === DATA CONVERSION ===
+
+map(value, fromLow, fromHigh, toLow, toHigh) // Translate value in range of fromLow to fromHigh to a corresponding value in the range toLow to toHigh
+
 // === DEBUGGING COMMANDS ===
 
 Serial.begin(baud_rate);          // Initialize serial communication at specified baud rate (e.g., 9600)
