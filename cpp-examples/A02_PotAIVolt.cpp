@@ -8,7 +8,7 @@ void setup() {
 
 void loop() {
   pot_ai = analogRead(pot_pin);
-  pot_mV = map(pot_ai,0,1023,0,5000); //Kunne vært pot_mV = pot_ai*5000.0/1024.0;
+  pot_mV = map(pot_ai,0,1023,0,5000); //Alternativt: pot_mV = pot_ai*5000.0/1024.0;
   Serial.print("Analog value: ");
   Serial.println(pot_ai);
   Serial.print("Voltage: ");
