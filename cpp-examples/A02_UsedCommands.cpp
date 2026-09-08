@@ -10,7 +10,7 @@ delay(milliseconds);              // Pause program execution for specified milli
 
 // === DATA CONVERSION ===
 
-double result = map(value, fromLow, fromHigh, toLow, toHigh); // Translate value in range of fromLow to fromHigh to a corresponding value in the range toLow to toHigh
+long result = map(value, fromLow, fromHigh, toLow, toHigh); // Translate value in range of fromLow to fromHigh to a corresponding value in the range toLow to toHigh
 
 // === DEBUGGING COMMANDS ===
 
