@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>xx_DistanceByTime_microsInterrupt</title>
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet"/>
+    <style>
+        body { margin: 0; padding: 20px; font-family: Arial, sans-serif; }
+        pre { border-radius: 6px; padding: 15px !important; }
+        .code-container { position: relative; }
+        .copy-btn {
+            position: absolute; top: 10px; right: 10px;
+            background-color: #4CAF50; color: white; border: none;
+            padding: 6px 12px; border-radius: 4px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="code-container">
+<pre><code class="language-cpp">/*
+  Interrupt-Driven Ultrasonic Sensor (HC-SR04) Example
+  
+  Advantages:
+  - Precise timing capture via hardware interrupts
+  - Non-blocking operation allows concurrent tasks
+  - No missed pulse edges due to polling delays
+*/
+
+#define TRIG_PIN 9
+#define ECHO_PIN 10
+
+// Volatile variables shared between ISR and main code
+volatile unsigned long echoStartTime = 0;    // Timestamp when echo goes HIGH
+volatile unsigned long echoEndTime = 0;      // Timestamp when echo goes LOW  
+volatile bool measurementReady = false;      // Flag indicating new data available
+bool trigTurnedOff = true;                   // Track trigger pin state
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(TRIG_PIN, OUTPUT);
+  digitalWrite(TRIG_PIN, LOW);               // Start with trigger low
+  pinMode(ECHO_PIN, INPUT);
+  
+  // Attach interrupt to echo pin - triggers on BOTH edges (CHANGE)
+  attachInterrupt(digitalPinToInterrupt(ECHO_PIN), handleEchoChange, CHANGE);
+  
+  Serial.println(&quot;Interrupt-driven ultrasonic sensor ready!&quot;);
+  Serial.println(&quot;Measurements will appear every ~100ms&quot;);
+}
+
+// Interrupt Service Routine - executes instantly when echo pin changes state
+void handleEchoChange() {
+  if (digitalRead(ECHO_PIN) == HIGH) {
+    // Rising edge: start of echo pulse
+    echoStartTime = micros();                // Capture exact timestamp
+  } else {
+    // Falling edge: end of echo pulse  
+    echoEndTime = micros();                  // Capture exact timestamp
+    measurementReady = true;                 // Signal new data ready
+  }
+}
+
+void loop() {
+  static unsigned long lastTriggerTime = 0;
+  const unsigned long triggerInterval = 100; // ms between measurements
+  
+  unsigned long currentTime = millis();
+  
+  // Trigger a new measurement at regular intervals (non-blocking)
+  if (currentTime - lastTriggerTime &gt;= triggerInterval &amp;&amp; trigTurnedOff) {
+    sendTriggerPulse();                      // Send 10µs trigger pulse
+    lastTriggerTime = currentTime;
+  }
+  
+  // Process completed measurements when ready (also non-blocking)
+  if (measurementReady) {
+    processMeasurement();                    // Calculate and display distance
+    measurementReady = false;                // Clear flag for next reading
+  }
+  
+  // ← Your Arduino can do OTHER work here while waiting!
+}
+
+void sendTriggerPulse() {
+  digitalWrite(TRIG_PIN, HIGH);            // Start trigger pulse
+  delayMicroseconds(10);                    // Hold high for 10µs (datasheet requirement)
+  digitalWrite(TRIG_PIN, LOW);             // End trigger pulse immediately
+}
+
+void processMeasurement() {
+  unsigned long duration = echoEndTime - echoStartTime;  // Calculate pulse width
+  
+  // Convert to distance: speed of sound = 343 m/s = 29.1 µs/cm round-trip
+  float distance_cm = duration / 58.2;      // Division by (29.1 * 2) for round trip
+  
+  Serial.print(&quot;Duration: &quot;);
+  Serial.print(duration);
+  Serial.println(&quot; µs&quot;);
+  
+  Serial.print(&quot;Distance: &quot;);
+  Serial.print(distance_cm, 1);              // One decimal place precision
+  Serial.println(&quot; cm&quot;);
+}
+
+/* Sample Output:
+Duration: 582 µs
+Distance: 10.0 cm
+Duration: 1164 µs  
+Distance: 20.0 cm
+*/
+</code></pre>
+<!-- 🔥 CRITICAL FIX: Use proven legacy copy mechanism instead of experimental clipboard API -->
+<button class="copy-btn" onclick="legacyCopyCode(this)">Copy Code</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<!-- 🔥 CRITICAL FIX: Include proven working copy function -->
+<script>
+function legacyCopyCode(button) {
+    // 🎯 EXACTLY replicate your originally-working approach from manual HTML file!
+    const codeBlock = button.previousElementSibling;  // Get the <pre><code> element
+    
+    // Extract clean text content (handles HTML entities automatically)
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = codeBlock.innerHTML;
+    const textToCopy = tempDiv.textContent || tempDiv.innerText || '';
+    
+    // 🔥 CORE WORKING MECHANISM: Create textarea + execCommand approach
+    const textarea = document.createElement("textarea");
+    textarea.value = textToCopy;
+    textarea.style.position = "fixed";  // Prevent scrolling to bottom
+    textarea.style.opacity = "0";       // Keep invisible but focusable
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    
+    try {
+        const successful = document.execCommand('copy');  // Universal browser support!
+        if (successful) {
+            button.textContent = "✅ Copied!";
+        } else {
+            throw new Error("execCommand returned false");
+        }
+    } catch (err) {
+        console.error('Copy failed:', err);
+        button.textContent = "❌ Manual Copy Required";
+        // Highlight code for manual selection as fallback
+        const range = document.createRange();
+        range.selectNode(codeBlock.querySelector('code') || codeBlock);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+    } finally {
+        setTimeout(() => {
+            button.textContent = "Copy Code";  // Restore original text
+            if (document.body.contains(textarea)) {
+                document.body.removeChild(textarea);  // Cleanup
+            }
+        }, 2000);
+    }
+}
+</script>
+
+</body>
+</html>
