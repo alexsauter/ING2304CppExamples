@@ -30,7 +30,7 @@ unsigned long time = micros();    // Returns elapsed microseconds since Arduino 
 unsigned long duration = pulseIn(pin, value);              // Wait for pin to reach &#x27;value&#x27;, measure how long it stays there
 unsigned long duration = pulseIn(pin, value, timeout);     // Same but with timeout in microseconds (prevents infinite waiting)
 
-NewSonar sonar(TRIG_PIN, ECHO_PIN, MAX_DISTANCE);  // Initialize NewPing library with pins and max range
+NewSonar sonar(TRIG_PIN, ECHO_PIN, MAX_DISTANCE);  // Initialize NewPing library with pins and max range, krever #include &lt;NewPing.h&gt; og installasjon av tilhørende bibliotek
 unsigned int duration = sonar.ping();   // Returns echo time in microseconds (see: https://github.com/livetronic/Arduino-NewPing)
                                         // Returns NO_ECHO if no object detected within range
                                         // Use sonar.ping_cm() for direct distance measurement
