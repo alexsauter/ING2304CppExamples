@@ -16,4 +16,9 @@ void setup() {
 // No ISR needed! Hardware handles pin toggling automatically
 void loop() {
   delay(4000);          // Doesn't affect timing at all
+  //Turn off blinking:
+  //TCCR1B = 0b00000000;  // Stop timer - no clock source!
+  //digitalWrite(9, LOW); // Force LED off regardless of current hardware state
+  //Turn back on blinking:
+  //TCCR1B = 0b00001101;  // Restart timer with prescaler 1024
 }
