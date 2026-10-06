@@ -13,6 +13,7 @@ NewPing sonar(TRIG_PIN, ECHO_PIN, MAX_DISTANCE);  // Initialize NewPing library 
 unsigned int duration = sonar.ping();   // Returns echo time in microseconds (see: https://github.com/livetronic/Arduino-NewPing)
                                         // Returns NO_ECHO if no object detected within range
                                         // Use sonar.ping_cm() for direct distance measurement
+                                        // Use sonar.ping_median(iterations) for reducing measurement errors
 
 // === EXTERNAL INTERRUPT ===
 volatile bool state;  //Variables changed during interrupt have to be of type volatile!
