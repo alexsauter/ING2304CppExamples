@@ -3,7 +3,7 @@
 #define ECHO_PIN 10     // HC-SR04 Echo pin connected to Arduino digital pin 10
 #define MAX_DISTANCE 400  // Maximum sensing distance in centimeters (affects timeout)
 
-NewSonar sonar(TRIG_PIN, ECHO_PIN, MAX_DISTANCE);  // Initialize NewPing library with pins and max range
+NewPing sonar(TRIG_PIN, ECHO_PIN, MAX_DISTANCE);  // Initialize NewPing library with pins and max range
 
 void setup() {
   Serial.begin(9600);
