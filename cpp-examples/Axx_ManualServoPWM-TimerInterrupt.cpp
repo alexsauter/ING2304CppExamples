@@ -30,7 +30,7 @@ void loop() {
 ISR(TIMER1_COMPA_vect) {
   PORTB ^= (1 << (SERVO_PIN - 8)); //Toggle SERVO_PIN, here only correct if SERVO_PIN is part of PORTB
   //Set new time for next trigger - after checking actual pin value
-  if ((PORTB && (1 << (SERVO_PIN - 8))) > 0) { //If pin is ON now
+  if ((PORTB & (1 << (SERVO_PIN - 8))) > 0) { //If pin is ON now
     OCR1A = usToTicks(pulseWidth);
   } else {
     OCR1A = usToTicks(20000 - pulseWidth); //Rest of time be OFF
