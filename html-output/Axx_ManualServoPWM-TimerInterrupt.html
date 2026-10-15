@@ -43,7 +43,7 @@ void setup() {
 
 void loop() {
   // pulseWidth can be changed during main program
-  pulseWidth = map(analogRead(CTRL_PIN), 0, 1023, 1000, 2000);
+  pulseWidth = map(analogRead(CTRL_PIN), 0, 1023, 544, 2400);
   
   //Other code will not interfere with PWM output
 }
