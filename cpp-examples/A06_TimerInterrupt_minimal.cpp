@@ -12,6 +12,7 @@ void setup() {
 
 void loop() {
   // Main code runs freely here without blocking
+  //delay(10000); //Stopping for 10 s = 10000 ms; Blocking calls like these don't interrupt the blinking
 }
 
 void blinkISR() {
