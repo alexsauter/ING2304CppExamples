@@ -27,12 +27,11 @@ void loop() {
 }
 
 ISR(TIMER1_COMPA_vect) {
-  PORTB ^= (1 << (SERVO_PIN - 8));       //Toggle SERVO_PIN, here only correct if SERVO_PIN is part of PORTB
-
   state = PINB & (1 << (SERVO_PIN - 8)); //Read current state
+  PORTB ^= (1 << (SERVO_PIN - 8));       //Toggle SERVO_PIN, here only correct if SERVO_PIN is part of PORTB
   
   //Set new timer value for next trigger after checking actual pin value, updates with current pulseWidth
-  if (state) { //If pin is ON now
+  if (!state) { //If pin is ON now
     OCR1A = usToTicks(pulseWidth);    //Set counter number to match for current pulseWidth
   } else {
     OCR1A = usToTicks(20000 - pulseWidth); //Rest of time (for servos 20 ms) be OFF
