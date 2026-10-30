@@ -20,7 +20,7 @@ PORTB ^= (1 << PB5);      // Toggle pin 13
 
 PINB |= (1 << PB5);      // Toggle pin 13
 
-bool pin_value = PIND & (1 << PD2) > 0;  //Read value of pin 2
+bool pin_value = PIND & (1 << PD2);  //Read value of pin 2
 
 // === EXTERNAL INTERRUPT (port manipulation) ===
 EICRA = 0B00000001;         // ISC01=0, ISC00=1: Any change on INT0 (=pin 2) triggers interrupt
