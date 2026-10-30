@@ -3,7 +3,7 @@ void setup() {
   
   // Configure Timer1 for CTC mode with OCR1A compare match
   TCCR1A = 0;                    // Normal port operation, OC1A/OC1B disconnected
-  TCCR1B = 0b00001101;            // CTC mode, prescaler = 1024 (bits 3:0 = 1101)
+  TCCR1B = 0b00001101;            // CTC mode with reset at OCR1A, prescaler = 1024 (bits 3:0 = 1101)
   OCR1A = 7813;                  // Compare value for ~0.5 second
   TIMSK1 = 0b00000010;           // Enable TIMER1 COMPA interrupt
 }
