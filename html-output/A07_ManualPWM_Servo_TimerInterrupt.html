@@ -31,7 +31,6 @@ volatile bool state = false;  //Remember state to use in ISR
 
 void setup() {
   pinMode(SERVO_PIN, OUTPUT);
-  digitalWrite(SERVO_PIN, LOW);     // Start with low
   
   // Configure Timer1 for servo control
   TCCR1A = 0;                        // Normal mode, could be TCCR1A = _BV(COM1A0); to toggle OC1A (=pin 9) on Compare Match (hardware auto-toggle)
