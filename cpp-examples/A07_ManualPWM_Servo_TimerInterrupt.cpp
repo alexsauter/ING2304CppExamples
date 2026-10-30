@@ -10,6 +10,7 @@ volatile bool state = false;  //Remember state to use in ISR
 
 void setup() {
   pinMode(SERVO_PIN, OUTPUT);
+  digitalWrite(SERVO_PIN, LOW);     // Start with low
   
   // Configure Timer1 for servo control
   TCCR1A = 0;                        // Normal mode, could be TCCR1A = _BV(COM1A0); to toggle OC1A (=pin 9) on Compare Match (hardware auto-toggle)
@@ -22,7 +23,7 @@ void setup() {
 
 void loop() {
   // Pulswidth can be changed during main program
-  pulseWidth = map(analogRead(CTRL_PIN), 0, 1023, 550, 2250); //Adjust for specific servo, 544-2400 can be typical range
+  pulseWidth = map(analogRead(CTRL_PIN), 0, 1023, 1000, 2000); //Adjust for specific servo, 544-2400 can be typical range
 }
 
 ISR(TIMER1_COMPA_vect) {
