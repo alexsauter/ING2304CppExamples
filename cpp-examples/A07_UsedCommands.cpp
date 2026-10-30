@@ -46,11 +46,21 @@ ISR(TIMER1_COMPA_vect) {    // Interrupt Service Routine for TIMER1 COMPA
   // User code here - keep as short as possible!
 }                           // Vector #12 in ATmega328P interrupt table
 
+// === TIMER1 REGISTERS FOR PWM AND TIMING CONTROL ===
+ICR1 = 40000;       // Input Capture Register - Sets period/frequency in Fast PWM modes (Mode 14)
+                    // Counter counts from 0 to ICR1, then resets automatically
+OCR1A = 3000;       // Output Compare Register A - Controls pulse width/duty cycle
+                    // Pin state changes when counter matches this value
+TCNT1 = 0;          // Timer/Counter Register - Current count value (read/write)
+
 /* Key Points About Timer1 Registers Used Above:
-• TCCR1A/B – Timer/Counter Control Registers controlling waveform generation & clock prescaling
-• WGM bits – Waveform Generation Mode selection; here set for CTC mode with OCR1A as TOP value  
-• CS bits – Clock Select determining how much to divide system clock by before feeding timer (here /8)  
-• TCNT1 – Current 16-bit counter value incremented every microsecond in our configuration  
-• OCR1A – Output Compare Register A holding target count that triggers interrupt when matched  
-• TIMSK1 – Timer Interrupt Mask Register enabling/disabling specific interrupts per module feature  
+Core Registers:
+• TCCR1A - Timer/Counter Control Register A (waveform generation + output compare)
+• TCCR1B - Timer/Counter Control Register B (clock source, waveform mode bits)
+• TCNT1 - Timer/Counter Register (current count value)
+• OCR1A - Output Compare Register A (pulse width/duty cycle control)
+• ICR1 - Input Capture Register (period/frequency setting in Mode 14)
+Interrupt System:
+• TIMSK1 - Timer/Counter Interrupt Mask Register (enable interrupts)
+• TIFR1 - Timer/Counter Interrupt Flag Register (interrupt status flags)
 */
