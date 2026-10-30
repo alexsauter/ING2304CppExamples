@@ -28,7 +28,7 @@ int pulseWidth = 1500;      //Default puls-width in microseconds
 #define usToTicks(us) ((us * 2))  // We&#x27;re are going to be at 2MHz (prescaler /8 of 16MHz, set by TCCR1B)
 
 void setup() {
-  pinMode(SERVO_PIN, OUTPUT);
+  pinMode(9, OUTPUT);    // For setting OC1A = pin 9 as output (not strictly necessary here)
   
   // Configure Timer1 for servo control - fast PWM
   TCCR1A = _BV(COM1A1) | _BV(WGM11);              // Clear OC1A on compare match
