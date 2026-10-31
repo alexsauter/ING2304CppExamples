@@ -52,9 +52,9 @@ ISR(TIMER1_COMPA_vect) {
   
   //Set new timer value for next trigger after checking actual pin value, updates with current pulseWidth
   if (!state) { // If pin was OFF, we just turned it ON → next turn OFF after pulseWidth
-    OCR1A = usToTicks(pulseWidth);    //Set counter number to match for current pulseWidth
+    OCR1A = usToTicks(constrain(pulseWidth, 500, 2500));    //Set counter number to match for current pulseWidth
   } else {      // If pin was ON, we just turned it OFF → wait rest of period (20 ms for servos)
-    OCR1A = usToTicks(20000 - pulseWidth);
+    OCR1A = usToTicks(constrain(20000 - pulseWidth, 500, 19500));
   }
   //TCNT1 = 0;  //Reset counter to start at zero, not necessary when in CTC mode with auto-reset
 }
