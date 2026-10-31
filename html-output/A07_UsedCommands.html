@@ -47,6 +47,11 @@ myservo.writeMicroseconds(uS); // Set servo position directly by pulse width in 
 
 int pos = myservo.read();      // Read last commanded angle (returns value written with write())
 
+// === MATHEMATICAL UTILITY FUNCTIONS ===
+constrain(value, min_limit, max_limit);     // Limits value to stay within [min_limit, max_limit] range
+                                            // Returns same type as input (int/long/float/double)
+                                            // Prevents out-of-bound values that could damage hardware or break logic
+
 // === MANUAL TIMER1 CONFIGURATION ===
 TCCR1A = 0;                    // Reset Timer/Counter Control Register A (normal port operation, OC1A/OC1B disconnected)
                                // Clears all bits for straightforward CTC mode setup
