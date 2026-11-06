@@ -22,6 +22,7 @@ float temperatureC = DEVICE_DISCONNECTED_C;
 void setup() {
   Serial.begin(9600);
   Serial1.begin(9600);
+  Serial1.setTimeout(50); // 100 ms pakker
 
   // Starter biblioteket
   sensors.begin();
@@ -37,7 +38,7 @@ void loop() {
     sensors.requestTemperatures();
     readAndRequestNewReading = false;
 
-    
+    //Gi ut temperaturen som ble lest
     if (temperatureC == DEVICE_DISCONNECTED_C) {  // = -127.00°C
       Serial.println("ERROR: Sensor not connected or not responding!");
     } else {
@@ -47,11 +48,12 @@ void loop() {
     }
   }
   
-  //Eventuelt les (og fjern) alle verdiene som har ansamlet seg
-  while (Serial1.available() > 0) {
+  //Eventuelt les (og fjern) alle verdiene som har ansamlet seg, med timeout
+  int startTime = millis();
+  while ((Serial1.available() > 0) && (millis() - startTime < 50)) {
     data = Serial1.parseInt(); //Leser bit-sekvens som int, overskriver eldre data med nyere
-    Serial.println(data);      //Skriver ut til hoved seriell-port til debugging
   }
+  Serial.println(data);      //Skriver ut til hoved seriell-port til debugging
   delay(1000);  //Lengre pauser i avlesningen som her bør håndteres med while-løsningen over, ellers er if-løsningen godt nok
 }
 
