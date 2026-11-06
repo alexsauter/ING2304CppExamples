@@ -35,7 +35,7 @@ void loop() {
   if (readAndRequestNewReading) {
     temperatureC = sensors.getTempCByIndex(0); //Read temperature after last request
     sensors.requestTemperatures();
-    doRequest = false;
+    readAndRequestNewReading = false;
 
     
     if (temperatureC == DEVICE_DISCONNECTED_C) {  // = -127.00°C
