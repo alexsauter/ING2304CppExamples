@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>A08_TwoSerial_OneWireTemp</title>
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet"/>
+    <style>
+        body { margin: 0; padding: 20px; font-family: Arial, sans-serif; }
+        pre { border-radius: 6px; padding: 15px !important; }
+        .code-container { position: relative; }
+        .copy-btn {
+            position: absolute; top: 10px; right: 10px;
+            background-color: #4CAF50; color: white; border: none;
+            padding: 6px 12px; border-radius: 4px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="code-container">
+<pre><code class="language-cpp">#include &lt;SoftwareSerial.h&gt;
+#include &lt;OneWire.h&gt;
+#include &lt;DallasTemperature.h&gt;
+
+// Start en sekundær seriell port
+SoftwareSerial Serial1(2, 3); // RX, TX
+
+int data;
+
+// Data ledning er koblet til digital pin 7
+#define ONE_WIRE_BUS 7
+
+// Setup oneWire instance for kommunikasjon med One-Wire enhet -&gt; DS18B20 temp sensor
+OneWire oneWire(ONE_WIRE_BUS);
+// Bruk Dallas Temperature sensor bibliotek til tolkning av temperaturmålingen
+DallasTemperature sensors(&amp;oneWire);
+
+void setup() {
+  Serial.begin(9600);
+  Serial1.begin(9600);
+
+  // Starter biblioteket
+  sensors.begin();
+}
+
+void loop() {
+  sensors.requestTemperatures();  // Start fresh conversion each time
+  delay(750);                     // Wait for conversion (required!)
+  
+  float temperatureC = sensors.getTempCByIndex(0);
+  if (temperatureC == DEVICE_DISCONNECTED_C) {  // = -127.00°C
+    Serial.println(&quot;ERROR: Sensor not connected or not responding!&quot;);
+  } else {
+    Serial.print(&quot;Temperature: &quot;);
+    Serial.print(temperatureC);
+    Serial.println(&quot;°C&quot;);
+  }
+  
+  //Eventuelt les (og fjern) alle verdiene som har ansamlet seg
+  while (Serial1.available() &gt; 0) {
+    data = Serial1.parseInt(); //Leser bit-sekvens som int, overskriver eldre data med nyere
+    Serial.println(data);      //Skriver ut til hoved seriell-port til debugging
+  }
+  delay(1000);  //Lengre pauser i avlesningen som her bør håndteres med while-løsningen over, ellers er if-løsningen godt nok
+}
+</code></pre>
+<!-- 🔥 CRITICAL FIX: Use proven legacy copy mechanism instead of experimental clipboard API -->
+<button class="copy-btn" onclick="legacyCopyCode(this)">Copy Code</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<!-- 🔥 CRITICAL FIX: Include proven working copy function -->
+<script>
+function legacyCopyCode(button) {
+    // 🎯 EXACTLY replicate your originally-working approach from manual HTML file!
+    const codeBlock = button.previousElementSibling;  // Get the <pre><code> element
+    
+    // Extract clean text content (handles HTML entities automatically)
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = codeBlock.innerHTML;
+    const textToCopy = tempDiv.textContent || tempDiv.innerText || '';
+    
+    // 🔥 CORE WORKING MECHANISM: Create textarea + execCommand approach
+    const textarea = document.createElement("textarea");
+    textarea.value = textToCopy;
+    textarea.style.position = "fixed";  // Prevent scrolling to bottom
+    textarea.style.opacity = "0";       // Keep invisible but focusable
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    
+    try {
+        const successful = document.execCommand('copy');  // Universal browser support!
+        if (successful) {
+            button.textContent = "✅ Copied!";
+        } else {
+            throw new Error("execCommand returned false");
+        }
+    } catch (err) {
+        console.error('Copy failed:', err);
+        button.textContent = "❌ Manual Copy Required";
+        // Highlight code for manual selection as fallback
+        const range = document.createRange();
+        range.selectNode(codeBlock.querySelector('code') || codeBlock);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+    } finally {
+        setTimeout(() => {
+            button.textContent = "Copy Code";  // Restore original text
+            if (document.body.contains(textarea)) {
+                document.body.removeChild(textarea);  // Cleanup
+            }
+        }, 2000);
+    }
+}
+</script>
+
+</body>
+</html>
