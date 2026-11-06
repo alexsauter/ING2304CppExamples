@@ -16,7 +16,7 @@ OneWire oneWire(ONE_WIRE_BUS);
 // Bruk Dallas Temperature sensor bibliotek til tolkning av temperaturmålingen
 DallasTemperature sensors(&oneWire);
 
-volatile bool doRequest = false;
+volatile bool readAndRequestNewReading = false;
 float temperatureC = DEVICE_DISCONNECTED_C;
 
 void setup() {
@@ -32,18 +32,19 @@ void setup() {
 }
 
 void loop() {
-  if (doRequest) {
+  if (readAndRequestNewReading) {
     temperatureC = sensors.getTempCByIndex(0); //Read temperature after last request
     sensors.requestTemperatures();
     doRequest = false;
-  }
-  
-  if (temperatureC == DEVICE_DISCONNECTED_C) {  // = -127.00°C
-    Serial.println("ERROR: Sensor not connected or not responding!");
-  } else {
-    Serial.print("Temperature: ");
-    Serial.print(temperatureC);
-    Serial.println("°C");
+
+    
+    if (temperatureC == DEVICE_DISCONNECTED_C) {  // = -127.00°C
+      Serial.println("ERROR: Sensor not connected or not responding!");
+    } else {
+      Serial.print("Temperature: ");
+      Serial.print(temperatureC);
+      Serial.println("°C");
+    }
   }
   
   //Eventuelt les (og fjern) alle verdiene som har ansamlet seg
@@ -55,5 +56,5 @@ void loop() {
 }
 
 void timerISR() {
-    doRequest = true;
+    readAndRequestNewReading = true;
 }
