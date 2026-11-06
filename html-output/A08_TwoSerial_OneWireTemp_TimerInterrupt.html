@@ -43,7 +43,7 @@ float temperatureC = DEVICE_DISCONNECTED_C;
 void setup() {
   Serial.begin(9600);
   Serial1.begin(9600);
-  Serial1.setTimeout(150); // 100 ms pakker
+  Serial1.setTimeout(150); // Pausen mellom pakker er 100 ms her
 
   // Starter biblioteket
   sensors.begin();
@@ -74,7 +74,7 @@ void loop() {
     data = Serial1.parseInt(); //Leser bit-sekvens som int, overskriver eldre data med nyere
   }
   Serial.println(data);      //Skriver ut til hoved seriell-port til debugging
-  delay(1000);  //Lengre pauser i avlesningen som her bør håndteres med while-løsningen over, ellers er if-løsningen godt nok
+  //delay(1000);  //Lengre pauser i avlesningen som her bør håndteres med while-løsningen over, ellers er if-løsningen godt nok
 }
 
 void timerISR() {
