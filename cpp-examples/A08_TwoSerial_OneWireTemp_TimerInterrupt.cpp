@@ -22,7 +22,7 @@ float temperatureC = DEVICE_DISCONNECTED_C;
 void setup() {
   Serial.begin(9600);
   Serial1.begin(9600);
-  Serial1.setTimeout(50); // 100 ms pakker
+  Serial1.setTimeout(150); // 100 ms pakker
 
   // Starter biblioteket
   sensors.begin();
@@ -49,8 +49,7 @@ void loop() {
   }
   
   //Eventuelt les (og fjern) alle verdiene som har ansamlet seg, med timeout
-  int startTime = millis();
-  while ((Serial1.available() > 0) && (millis() - startTime < 50)) {
+  while (Serial1.available() > 0) {
     data = Serial1.parseInt(); //Leser bit-sekvens som int, overskriver eldre data med nyere
   }
   Serial.println(data);      //Skriver ut til hoved seriell-port til debugging
