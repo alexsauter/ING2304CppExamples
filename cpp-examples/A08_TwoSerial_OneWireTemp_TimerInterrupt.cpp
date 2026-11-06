@@ -52,6 +52,12 @@ void loop() {
   while (Serial1.available() > 0) {
     data = Serial1.parseInt(); //Leser bit-sekvens som int, overskriver eldre data med nyere
   }
+/*  if (Serial1.available() > 0) {
+    data = Serial1.parseInt(); //Leser bit-sekvens som int, overskriver eldre data med nyere
+  }
+  while (Serial1.available() > 0) {
+    Serial1.read();
+  }*/
   Serial.println(data);      //Skriver ut til hoved seriell-port til debugging
   //delay(1000);  //Lengre pauser i avlesningen som her bør håndteres med while-løsningen over, ellers er if-løsningen godt nok
 }
