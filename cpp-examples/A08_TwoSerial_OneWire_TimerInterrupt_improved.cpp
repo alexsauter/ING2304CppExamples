@@ -47,7 +47,7 @@ void loop() {
     lastTime = millis();
 
     data = data - OFFSET;
-    if (abs(data) < 1024) { //Gyldig verdi
+    if ((data >= 0) && (data < 1024)) { //Gyldig verdi
       Serial.print("Analog data: ");
       Serial.println(data);
     }
