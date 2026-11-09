@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>A08_UsedCommands</title>
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet"/>
+    <style>
+        body { margin: 0; padding: 20px; font-family: Arial, sans-serif; }
+        pre { border-radius: 6px; padding: 15px !important; }
+        .code-container { position: relative; }
+        .copy-btn {
+            position: absolute; top: 10px; right: 10px;
+            background-color: #4CAF50; color: white; border: none;
+            padding: 6px 12px; border-radius: 4px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="code-container">
+<pre><code class="language-cpp">// === UART/USB SERIAL COMMUNICATION ===
+Serial.begin(9600);                     // Initialize serial at 9600 baud rate
+Serial.available() &gt; 0                  // Check if data is available to read
+a = Serial.read();                      // Read byte as ASCII (returns int)
+a = Serial.parseInt();                  // Parse incoming bytes as integer value
+Serial.println(a);                      // Print integer converted to string representation
+Serial.print(&quot;Temperature: &quot;);          // Print without newline
+
+// === SOFTWARE SERIAL (SECONDARY UART) ===
+#include &lt;SoftwareSerial.h&gt;             // Required library for software-based serial
+SoftwareSerial Serial1(RX_pin, TX_pin); // Create secondary serial object (RX, TX pins)
+Serial1.begin(9600);                    // Initialize software serial at specified baud rate
+Serial1.available() &gt; 0                 // Check if data available on secondary port
+data = Serial1.parseInt();              // Parse incoming data as integer from secondary port
+
+// === I2C COMMUNICATION ===
+#include &lt;Wire.h&gt;                        // Required library for I2C communication
+
+// MASTER MODE:
+Wire.begin();                            // Join I2C bus as master (no address needed)
+Wire.requestFrom(address, bytes);        // Request specific number of bytes from slave device
+Wire.available() &gt; 0                     // Check if data is available to read
+c = Wire.read();                         // Read received byte
+
+// SLAVE MODE:
+Wire.begin(address);                      // Join I2C bus with specific address (e.g., #8)
+Wire.onRequest(handler_function);         // Register function to call when master requests data
+Wire.write(value);                        // Send data back to master during request event
+
+// === ONEWIRE PROTOCOL ===
+#include &lt;OneWire.h&gt;                      // Required library for OneWire communication
+#define ONE_WIRE_BUS pin_number           // Define which digital pin connects to sensor
+OneWire oneWire(ONE_WIRE_BUS);            // Create OneWire instance on specified pin
+
+// For DS18B20 Temperature Sensor:
+#include &lt;DallasTemperature.h&gt;            // Required library for DS18B20 sensors
+DallasTemperature sensors(&amp;oneWire_instance)  // Pass OneWire reference to temperature lib
+sensors.begin();                          // Initialize DallasTemperature library
+sensors.requestTemperatures();            // Send command to get temperatures from all sensors
+float temp = sensors.getTempCByIndex(0);  // Get temperature in Celsius by sensor index (0-based)
+DEVICE_DISCONNECTED_C                     // Constant returned if sensor disconnected (-127°C)
+</code></pre>
+<!-- 🔥 CRITICAL FIX: Use proven legacy copy mechanism instead of experimental clipboard API -->
+<button class="copy-btn" onclick="legacyCopyCode(this)">Copy Code</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<!-- 🔥 CRITICAL FIX: Include proven working copy function -->
+<script>
+function legacyCopyCode(button) {
+    // 🎯 EXACTLY replicate your originally-working approach from manual HTML file!
+    const codeBlock = button.previousElementSibling;  // Get the <pre><code> element
+    
+    // Extract clean text content (handles HTML entities automatically)
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = codeBlock.innerHTML;
+    const textToCopy = tempDiv.textContent || tempDiv.innerText || '';
+    
+    // 🔥 CORE WORKING MECHANISM: Create textarea + execCommand approach
+    const textarea = document.createElement("textarea");
+    textarea.value = textToCopy;
+    textarea.style.position = "fixed";  // Prevent scrolling to bottom
+    textarea.style.opacity = "0";       // Keep invisible but focusable
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    
+    try {
+        const successful = document.execCommand('copy');  // Universal browser support!
+        if (successful) {
+            button.textContent = "✅ Copied!";
+        } else {
+            throw new Error("execCommand returned false");
+        }
+    } catch (err) {
+        console.error('Copy failed:', err);
+        button.textContent = "❌ Manual Copy Required";
+        // Highlight code for manual selection as fallback
+        const range = document.createRange();
+        range.selectNode(codeBlock.querySelector('code') || codeBlock);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+    } finally {
+        setTimeout(() => {
+            button.textContent = "Copy Code";  // Restore original text
+            if (document.body.contains(textarea)) {
+                document.body.removeChild(textarea);  // Cleanup
+            }
+        }, 2000);
+    }
+}
+</script>
+
+</body>
+</html>
