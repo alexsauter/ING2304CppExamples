@@ -25,6 +25,7 @@
 SoftwareSerial Serial1(2, 3); // RX, TX
 
 int data;
+const int OFFSET = 2000;
 
 void setup() {
   Serial.begin(9600);   //Start seriell til PC
@@ -35,7 +36,10 @@ void loop() {
   //Les neste datapakke om tilgjengelig, én om gangen
   if (Serial1.available() &gt; 0) {
     data = Serial1.parseInt();   //Leser bit-sekvens som int - datatypen til variabelen
-    Serial.println(data);
+    if (data != 0) {
+      data = data - OFFSET;
+      Serial.println(data);
+    }
   }
 }
 </code></pre>
